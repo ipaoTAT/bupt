@@ -1,4 +1,9 @@
 #!/bin/bash
+#########################################
+# Author: ipao
+# Date	: 2013-09-10
+# Description	: Authenticated Client for Compus Network of bupt
+#####################################3##
 
 LOGIN_CMD="./cmd/bupt_login"
 KEEP_U_FILE="./data/bupt.bac"
