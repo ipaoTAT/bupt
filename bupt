@@ -1,0 +1,100 @@
+#!/bin/bash
+#################################
+# Author:ipao
+# date: 2013-09-10
+# authenticate for campus network of bupt
+#################################
+
+LOGIN_CMD="./cmd/bupt_login"
+KEEP_U_FILE="./data/bupt.bac"
+#export IS_LOGIN
+BUPT_FILE="$0"
+PATH_LEN=${#BUPT_FILE}-5
+#
+BUPT_PATH=${BUPT_FILE:0:$PATH_LEN}
+#echo $BUPT_PATH
+cd $BUPT_PATH
+
+function _login(){
+
+	NO=""
+	PASSWD=""
+	KEEP_U=""
+	FLAG=0
+
+	if [ -e $KEEP_U_FILE ]; then
+## I Cannot do like this , because NO is a new local var
+#		cat $KEEP_U_FILE | read NO
+		read NO < $KEEP_U_FILE
+		if [[ $NO != "" ]]; then
+			FLAG=1
+		fi
+	fi
+
+	if [ $FLAG == 0 ]; then
+		read -p "Student NO.:" NO
+		read -p "password:" -s PASSWD
+		echo
+		read -p "Remenber You? (y/n):" KEEP_U
+	else
+		read -p "password for $NO :" -s PASSWD
+		echo
+		read -p "Remenber You? (y/n):" KEEP_U
+	fi
+	echo
+
+
+	lc=`$LOGIN_CMD $NO $PASSWD | iconv -f gbk -t utf-8 | grep "成功" | wc -l`
+	if [ $lc != "0" ]; then
+		echo "Login Success! Surffing Your Internet now"
+		#IS_LOGIN=1
+		if [ $KEEP_U == "y" ] || [ $KEEP_U == "yes" ]; then
+			echo $NO > $KEEP_U_FILE
+		else
+			echo "" > $KEEP_U_FILE
+		fi
+
+	else
+		echo "Login Fault! Maybe No. or Password was Wrong"
+	fi
+}
+
+function _logout(){
+	url="http://10.3.8.211/F.htm"	
+	curl $url > /dev/null
+	echo "Logout Success!"
+	#IS_LOGIN=0
+}
+
+function _command(){
+	echo "[Command]"
+	printf "\tlogin:\tlogin to the Internet\n"
+	printf "\tlogout:\tlogout from the Internet\n"
+}
+
+if [ $# != 1 ] ; then
+	echo "Need an Arg!"
+	_command
+	exit 1
+fi
+
+case $1 in
+	"login")
+	#	if [[ $IS_LOGIN == 1 ]]; then
+	#		echo "You Have Login, Don't Have to Do it Again!"
+	#	else
+			_login
+	#	fi
+		;;
+	"logout")
+#		if [[ $IS_LOGIN != 1 ]]; then
+#			echo "You Have not Login!"
+#		else
+			_logout
+#		fi
+		;;
+	*)
+		echo "Args Error!"
+		_command
+		;;
+esac
