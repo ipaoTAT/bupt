@@ -1,19 +1,8 @@
 #!/bin/bash
-#################################
-# Author:ipao
-# date: 2013-09-10
-# authenticate for campus network of bupt
-#################################
 
 LOGIN_CMD="./cmd/bupt_login"
 KEEP_U_FILE="./data/bupt.bac"
-#export IS_LOGIN
-BUPT_FILE="$0"
-PATH_LEN=${#BUPT_FILE}-5
-#
-BUPT_PATH=${BUPT_FILE:0:$PATH_LEN}
-#echo $BUPT_PATH
-cd $BUPT_PATH
+export IS_LOGIN
 
 function _login(){
 
@@ -93,7 +82,7 @@ case $1 in
 			_logout
 #		fi
 		;;
-	*)
+	"*")
 		echo "Args Error!"
 		_command
 		;;

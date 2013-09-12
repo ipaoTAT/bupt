@@ -1,0 +1,5 @@
+run
+	./bupt login 
+for login and
+	./bupt logout
+for logout
